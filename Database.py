@@ -42,3 +42,19 @@ def table_insert(table_name, info):
         raise Exception
 
 
+def table_get(table_name, columns, where):
+    try:
+        connection = db_config()
+        cursor = connection.cursor()
+        sql = """SELECT %s FROM %s WHERE %s""" % (columns, table_name, where)
+        cursor.execute(sql)
+        connection.commit()
+        result = cursor.fetchall()
+        cursor.close()
+        connection.close()
+        return result
+    except Exception:
+        raise Exception
+
+
+

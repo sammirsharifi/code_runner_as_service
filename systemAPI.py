@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from system import upload_request_handler
+from system import upload_request_handler, run_request_handler
 
 app = FastAPI()
 
@@ -18,3 +18,14 @@ async def root(request: Request):
         return response_message
     except Exception:
         return "bad request."
+
+
+@app.post("/run")
+async def root(request: Request):
+    try:
+        info = await request.json()
+        info_dict = {"username": info["token"], "code_id": info["code_id"]}
+        response_message = run_request_handler(info_dict)
+        return response_message
+    except Exception:
+        return Exception
