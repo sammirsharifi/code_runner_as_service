@@ -57,4 +57,9 @@ def table_get(table_name, columns, where):
         raise Exception
 
 
-
+"""
+connection = db_config()
+cursor = connection.cursor()
+sql = 
+cursor.execute(sql)
+connection.commit()"""
