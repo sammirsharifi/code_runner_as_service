@@ -42,7 +42,7 @@ def table_insert(table_name, info):
         raise Exception
 
 
-def table_get(table_name, columns, where):
+def table_read(table_name, columns, where):
     try:
         connection = db_config()
         cursor = connection.cursor()
@@ -56,10 +56,17 @@ def table_get(table_name, columns, where):
     except Exception:
         raise Exception
 
+def table_update(table_name,column,where):
+    try:
+        connection = db_config()
+        cursor = connection.cursor()
+        sql = """UPDATE %s SET %s WHERE %s""" % (table_name,column, where)
+        cursor.execute(sql)
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return True
+    except Exception:
+        raise Exception
 
-"""
-connection = db_config()
-cursor = connection.cursor()
-sql = 
-cursor.execute(sql)
-connection.commit()"""
+

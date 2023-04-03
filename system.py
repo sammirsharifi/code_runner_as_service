@@ -1,7 +1,7 @@
 import uuid
 
 import message_broker
-from Database import table_insert, table_get
+from Database import table_insert, table_read
 from s3 import s3_put_object
 from message_broker import send
 
@@ -15,10 +15,11 @@ def upload_request_handler(info_dict):
         user_object = info_dict["user_object"]
         username = info_dict["token"]
         user_code = user_object["code"]
+        user_inputs=user_object["inputs"]
         code_language = user_object["language"]
         object_id = generate_id()
         s3_put_object(user_code, object_id)
-        db_info = {"id": object_id, "email": username, "input": object_id, "language": code_language, "enable": 0}
+        db_info = {"id": object_id, "email": username, "input": user_inputs, "language": code_language, "enable": 0}
         table_insert("uploads", db_info)
 
         return f"your code uploaded successfully. your file id is {object_id}."
@@ -37,7 +38,7 @@ else returns <<your code added to jobs queue.>>"""
 def run_request_handler(info_dict):
     username = info_dict["username"]
     code_id = info_dict["code_id"]
-    result = table_get("uploads", "enable", f"id={code_id} AND email=\"{username}\"")
+    result = table_read("uploads", "enable", f"id={code_id} AND email=\"{username}\"")
     if len(result) == 0:
         return "This code does not belong to you."
     # enable field
