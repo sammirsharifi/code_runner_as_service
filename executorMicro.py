@@ -1,4 +1,4 @@
-import json
+from mailService import send_email
 from datetime import datetime
 
 import requests
@@ -37,8 +37,10 @@ def run_code(job):
     return response.json()
 
 
-def send_email(user_email, code_id, message):
+def email(code_id, message):
+    user_email = table_read("uploads", "email", f"id={code_id}")[0]
     message = f"Dear {user_email} your code with id:{code_id} is :\n " + message
+    send_email(user_email, message)
 
 
 """manager function gets code_id and job then runs the code and gets the response and calls update_result_jobs """
@@ -47,9 +49,8 @@ def send_email(user_email, code_id, message):
 def manager(code):
     code_id, job = code
     response_json = run_code(job)
-    update_results_jobs(response_json, code_id)
-    # user_email = table_read("uploads", "email", f"id = {code_id}]")
-    # send_email(user_email, code_id, email_message)
+    message = update_results_jobs(response_json, code_id)
+    #email(code_id, message)
 
 
 while True:

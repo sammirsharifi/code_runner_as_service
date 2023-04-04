@@ -15,7 +15,7 @@ def upload_request_handler(info_dict):
         user_object = info_dict["user_object"]
         username = info_dict["token"]
         user_code = user_object["code"]
-        user_inputs=user_object["inputs"]
+        user_inputs = user_object["inputs"]
         code_language = user_object["language"]
         object_id = generate_id()
         s3_put_object(user_code, object_id)
@@ -51,3 +51,17 @@ def run_request_handler(info_dict):
 def generate_id():
     id = str(uuid.uuid4().int)[:4]
     return id
+
+
+def status_request_handler(email):
+    codes_status={}
+    user_codes_id=table_read("uploads","id",f"email=\"{email}\"")
+    for code_id in user_codes_id:
+        code_id=code_id[0]
+        output,status,execute_date=tuple(table_read("results","output,status,execute_date",f"id ={code_id}")[0])
+        codes_status[code_id]={"output":output,"status":status,"execute_date":execute_date}
+    return codes_status
+
+
+
+
