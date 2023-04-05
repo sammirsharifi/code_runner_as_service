@@ -1,7 +1,17 @@
 from fastapi import FastAPI, Request
 from system import upload_request_handler, run_request_handler, status_request_handler
-
+from authentication import *
 app = FastAPI()
+
+
+@app.post("/auth")
+async def root(request: Request):
+    try:
+
+        return login()
+
+    except Exception:
+        return Exception
 
 
 @app.post("/upload")
